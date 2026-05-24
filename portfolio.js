@@ -712,16 +712,51 @@ tl.from("footer h3",{
 // form
 
 
-function handleSubmit(e) {
-  e.preventDefault(true);
-  
-  
-  document.getElementById("form-btn").innerText = "✔ done"
-  
 
-  alert("Message recieved 🚀 I'll get back to you faster than your WIFI drops 😅");
-  
-}
+
+const form = document.getElementById('form');
+const submitBtn = document.getElementById('form-btn');
+
+form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData(form);
+
+    const originalText = submitBtn.textContent;
+
+    submitBtn.textContent = "Sending...";
+    submitBtn.disabled = true;
+
+    try {
+        const response = await fetch("https://api.web3forms.com/submit", {
+            method: "POST",
+            body: formData
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            submitBtn.textContent = "✔ Done";
+            alert("Message received 🚀 I'll get back to you faster than your WIFI drops 😅");
+            form.reset();
+        } else {
+            alert("Error: " + data.message);
+        }
+
+    } catch (error) {
+        alert("Something went wrong. Please try again.");
+    } finally {
+        setTimeout(() => {
+            submitBtn.textContent = originalText;
+            submitBtn.disabled = false;
+        }, 2000);
+    }
+});
+
+
+
+
+
 
 // form
 
